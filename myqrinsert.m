@@ -23,7 +23,7 @@ function [Q,R] = qrinsert(Q,R,j,x,orient)
 %   See also QR, QRDELETE, PLANEROT.
 
 %   Copyright 1984-2004 The MathWorks, Inc.
-
+% just trying to add stuff
 if nargin < 5
     if nargin < 4
         error(message('MATLAB:qrinsert:NotEnoughInputs'))
