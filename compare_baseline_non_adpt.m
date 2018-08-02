@@ -55,12 +55,13 @@ te_all = nan(trial,n); teadpt_all = nan(trial,n);
 A_non_adpt = zeros(trial,n); D_all=nan(trial,L,n);
 yp_all = nan(l,Ts,trial); ypyy_all= nan(l,Ts,trial);y_test_all = nan(l,Ts,trial);
 
-for tt = 1:5
+for tt = 1:trial
 % generate the output
 %     disp(' ');
     disp(['trial #',num2str(tt)]);
     mrand = randn(n+l); mu = (mrand + mrand')/2; cov = mu * mu';
-    R1 = cov(1:n,1:n); R12 = cov(1:n,n+1:n+l); R2 = cov(n+1:n+l,n+1:n+l); 
+    R1 = eye(n); R12 = zeros(n,l); R2 = 0.0001*eye(l);
+%     R1 = cov(1:n,1:n); R12 = cov(1:n,n+1:n+l); R2 = cov(n+1:n+l,n+1:n+l); 
     x = zeros(n,N+1);y = zeros(l,N);pe_non = []; pe_adpt = [];
 %     y_test = zeros(l,Ts);
     for j=1:N
@@ -100,7 +101,7 @@ for tt = 1:5
     yp(t+1,:) = (C*xhat);
 
     erv = ((y_test(:,1:end)')-yp(2:end,:));
-    pe_base = sqrt(sum(erv.^2)./sum(y.^2))*100;
+    pe_base = sqrt(sum(erv.^2)./sum(y_test'.^2))*100;
     % obtain PE of each trial
     pe_base_all(tt,:) = pe_base;
     pe_all(tt,:) = pe_non;

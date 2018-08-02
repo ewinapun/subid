@@ -1,4 +1,4 @@
-function [Q,R] = qrinsert(Q,R,j,x,orient)
+function [R] = myqrinsert(R,j,x,orient)
 %QRINSERT Insert a column or row into QR factorization.
 %   [Q1,R1] = QRINSERT(Q,R,J,X) returns the QR factorization of the matrix A1,
 %   where A1 is A=Q*R with an extra column, X, inserted before A(:,J). If A has
@@ -13,7 +13,7 @@ function [Q,R] = qrinsert(Q,R,j,x,orient)
 %      A = magic(5);  [Q,R] = qr(A);
 %      j = 3; x = 1:5;
 %      [Q1,R1] = qrinsert(Q,R,j,x,'row');
-%   returns a valid QR factorization, although possibly different from
+% %   returns a valid QR factorization, although possibly different from
 %      A2 = [A(1:j-1,:); x; A(j:end,:)];
 %      [Q2,R2] = qr(A2);
 %
@@ -23,36 +23,36 @@ function [Q,R] = qrinsert(Q,R,j,x,orient)
 %   See also QR, QRDELETE, PLANEROT.
 
 %   Copyright 1984-2004 The MathWorks, Inc.
-% just trying to add stuff here
-if nargin < 5
-    if nargin < 4
-        error(message('MATLAB:qrinsert:NotEnoughInputs'))
-    end
-    orient = 'col';
-end
+
+% if nargin < 5
+%     if nargin < 4
+%         error(message('MATLAB:qrinsert:NotEnoughInputs'))
+%     end
+%     orient = 'col';
+% end
 
 [mx,nx] = size(x);
-[mq,nq] = size(Q);
+%[mq,nq] = size(Q);
 [m,n] = size(R);
 
 if isequal(orient,'col') && (n==0)
-   [Q,R] = qr(x);
+   [~,R] = qr(x);
    return;
 end
 
 if isequal(orient,'row') && (m==0)
-   [Q,R] = qr(x);
+   [~,R] = qr(x);
    return;
 end
 
 % Error checking
-if (mq ~= nq)
-    error(message('MATLAB:qrinsert:QNotSquare'))
-elseif (nq ~= m)
-    error(message('MATLAB:qrinsert:InnerDimQRfactors'))
-elseif (j <= 0)
-    error(message('MATLAB:qrinsert:NegInsertionIndex'))
-end
+% if (mq ~= nq)
+%     error(message('MATLAB:qrinsert:QNotSquare'))
+% elseif (nq ~= m)
+%     error(message('MATLAB:qrinsert:InnerDimQRfactors'))
+% elseif (j <= 0)
+%     error(message('MATLAB:qrinsert:NegInsertionIndex'))
+% end
 
 switch orient
 case 'col'
@@ -65,7 +65,7 @@ case 'col'
     
     % Make room and insert x before j-th column.
     R(:,j+1:n+1) = R(:,j:n);
-    R(:,j) = Q'*x;
+    R(:,j) = x;
     n = n+1;
     
     % Now R has nonzeros below the diagonal in the j-th column,
@@ -90,7 +90,7 @@ case 'col'
         if k < n
             R(p,k+1:n) = G*R(p,k+1:n);
         end
-        Q(:,p) = Q(:,p)*G';
+        %Q(:,p) = Q(:,p)*G';
     end
     
 case 'row'
@@ -102,7 +102,7 @@ case 'row'
     end
         
     R = [x; R];
-    Q = [1 zeros(1,m,class(R)); zeros(m,1) Q];
+    %Q = [1 zeros(1,m,class(R)); zeros(m,1) Q];
     
     % Now R is upper Hessenberg.
     %    R = [x x x x         [* * * *
@@ -128,13 +128,13 @@ case 'row'
         p = i : i+1;
         [G,R(p,i)] = planerot(R(p,i));
         R(p,i+1:n) = G * R(p,i+1:n);
-        Q(:,p) = Q(:,p) * G';
+        %Q(:,p) = Q(:,p) * G';
     end
     
     % This permutes row 1 of Q*R to row j of Q(p,:)*R
     if (j ~= 1)
         p = [2:j, 1, j+1:m+1];
-        Q = Q(p,:);
+        %Q = Q(p,:);
     end
     
 otherwise
